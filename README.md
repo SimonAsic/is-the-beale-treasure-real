@@ -83,13 +83,31 @@ What the script does and verifies:
 
 > This reproduces a **known, published** solution. It is not a new break.
 
-## 5. Bitcoin puzzle: a pipeline sanity-check (and a reality check)
+## 5. Zodiac Z408: cracking a homophonic cipher (and why blind solving fails)
+
+`zodiac_z408.py` tackles Zodiac's *first* cipher (1969) — a homophonic substitution where ~54 symbols map onto 26 letters, with common letters given several symbols to flatten the frequency profile. We reconstruct the scheme faithfully (the real message, multiple symbols per letter) and then *attack* it three ways:
+
+```
+Greedy hill-climb  (blind)            ->  ~11%   collapses into common-letter mush
+Simulated annealing (blind)           ->  ~2-28% homophonic resists; little signal to climb
+Crib-based attack  (Hardens, 1969)    ->  ~94%   the confession emerges
+```
+
+The blind failures are the **point**: flattening the frequency profile leaves an automated quadgram solver almost nothing to climb. That's why the Hardens broke Z408 by *guessing* the ego-driven killer would open with "I" and boast about "KILLING" — a crib that pins 33 of 54 symbols, after which simulated annealing recovers the rest:
+
+```
+ILIKEKILLINGPEOPLEBECAUSEITISSOMUCHFUN... (I like killing people because it is so much fun...)
+```
+
+(The recovered ~94% leaves a few rare, un-cribbed homophones mislabeled — exactly the symbols that make homophonic ciphers strong. Every word is still legible.) A working homophonic solver + a lesson in why homophonic ciphers resist automation.
+
+## 6. Bitcoin puzzle: a pipeline sanity-check (and a reality check)
 
 `bitcoin_puzzle.py` derives the addresses of "Bitcoin Puzzle" transactions #1–#5 from their publicly-known private keys (1, 3, 7, 8, 21) and confirms they match the real addresses — proving the secp256k1 → SHA256 → RIPEMD160 → Base58Check pipeline is correct.
 
 It's also the honest counterweight to cipher-treasure romance: the **unsolved** puzzles (#71+) require searching a ≥ 2⁷⁰ keyspace. There is no shortcut and no near-term hardware that makes it feasible. This file just shows the math is real by reproducing answers that are already public.
 
-## 6. Hunting Bitcoin keys for real (and the wall that stops it)
+## 7. Hunting Bitcoin keys for real (and the wall that stops it)
 
 `btc_key_hunt.py` implements **Baby-Step Giant-Step** discrete-log on secp256k1 — the actual technique used to solve the lower Bitcoin Puzzle transactions. Given a *public key* whose private key lies in a known k-bit range, it recovers the key in ~2^(k/2) operations. It really finds keys (round-trip verified):
 
@@ -124,6 +142,7 @@ Every +8 bits multiplies the time ~16× — the √(2^k) law made visible. Extra
 ├── beale_hoax_test.py   # Monte Carlo hoax test on #1/#2/#3
 ├── beale_forensics.py   # construction fingerprints
 ├── zodiac_z340.py       # Zodiac Z340 reproduction
+├── zodiac_z408.py       # Zodiac Z408 homophonic cracker (blind vs crib-based)
 ├── bitcoin_puzzle.py    # ECDSA pipeline sanity-check (needs ecdsa, base58)
 ├── btc_key_hunt.py      # BSGS elliptic-curve key recovery + the infeasibility wall
 └── data/
