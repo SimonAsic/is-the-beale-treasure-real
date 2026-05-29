@@ -89,12 +89,30 @@ What the script does and verifies:
 
 It's also the honest counterweight to cipher-treasure romance: the **unsolved** puzzles (#71+) require searching a ≥ 2⁷⁰ keyspace. There is no shortcut and no near-term hardware that makes it feasible. This file just shows the math is real by reproducing answers that are already public.
 
+## 6. Hunting Bitcoin keys for real (and the wall that stops it)
+
+`btc_key_hunt.py` implements **Baby-Step Giant-Step** discrete-log on secp256k1 — the actual technique used to solve the lower Bitcoin Puzzle transactions. Given a *public key* whose private key lies in a known k-bit range, it recovers the key in ~2^(k/2) operations. It really finds keys (round-trip verified):
+
+```
+20-bit range   FOUND  ✓   (850 hops, 0.08s)
+28-bit range   FOUND  ✓   (19,538 hops, 1.66s)
+36-bit range   FOUND  ✓   (269,446 hops, 23.2s)
+40-bit range   FOUND  ✓   (1,245,271 hops, 108.7s)
+```
+
+Every +8 bits multiplies the time ~16× — the √(2^k) law made visible. Extrapolated: k=66 is GPU-cluster territory (that puzzle *was* solved), k=135 is ~2^67 ops (hopeless).
+
+**And the decisive catch:** the *unsolved* puzzles (#71+) publish only the address (a hash160), **not** the public key. With no public key you can't run BSGS or kangaroo at all — you must brute-force `key → pubkey → hash160 → compare` over the entire 2^k space, with no square-root shortcut. That is the honest, unbreakable wall.
+
+> The punchline: this tool genuinely finds keys — but only ones small enough that there was never any money behind them. The keys with coins behind them are exactly the ones it cannot reach. That's not a flaw in the code; it's the reason Bitcoin works.
+
 ---
 
 ## What this is, and isn't
 
 - ✅ Reproducible reimplementations of published results, with verification you can run.
 - ✅ An original (if modest) statistical framing of the Beale #1 hoax question, with the #3 control.
+- ✅ A working ECDLP key-recovery tool that demonstrates exactly where (and why) Bitcoin key-hunting becomes infeasible.
 - ❌ Not a new cipher break, not a treasure map, not a way to recover anyone's coins.
 
 ## Repository layout
@@ -107,6 +125,7 @@ It's also the honest counterweight to cipher-treasure romance: the **unsolved** 
 ├── beale_forensics.py   # construction fingerprints
 ├── zodiac_z340.py       # Zodiac Z340 reproduction
 ├── bitcoin_puzzle.py    # ECDSA pipeline sanity-check (needs ecdsa, base58)
+├── btc_key_hunt.py      # BSGS elliptic-curve key recovery + the infeasibility wall
 └── data/
     ├── beale_1.txt  beale_2.txt  beale_3.txt
     ├── declaration.txt  constitution.txt
