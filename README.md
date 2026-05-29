@@ -140,6 +140,14 @@ Every +8 bits multiplies the time ~16× — the √(2^k) law made visible. Extra
 - **Z340 ciphertext transcription**: [zodiackillerciphers.com](https://zodiackillerciphers.com/) via the [n1k0m0 transposition-reverser](https://github.com/n1k0m0/Zodiac-340-Transposition-Reverser)
 - **Founding documents**: U.S. National Archives ([Declaration](https://www.archives.gov/founding-docs/declaration-transcript), [Constitution](https://www.archives.gov/founding-docs/constitution-transcript))
 
+## Support / tip jar
+
+If this saved you a treasure hunt — or you just enjoyed the read — tips are welcome and keep the weekend cryptanalysis coming:
+
+**BTC:** `3PuGDsdHaAoMNApqHP6oZa9RN1g6MEGEkS`
+
+(A valid P2SH mainnet address — verify the checksum yourself with the pipeline in `bitcoin_puzzle.py` if you like. Every sat appreciated. 🏴‍☠️)
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
